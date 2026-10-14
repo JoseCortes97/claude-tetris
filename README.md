@@ -41,7 +41,10 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Vista previa** de la siguiente pieza.
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
-- **Pausa** y **Game Over** con opción de reinicio.
+- **Menú de pausa** (`P` o `Esc`) con opciones para reanudar, reiniciar, ver los controles y elegir el **nivel inicial** (1–10) de la próxima partida (también disponible en la pantalla de Game Over).
+- **Game Over** con opción de reinicio.
+- **Tabla de récords local** (`localStorage`, clave `tetris.records`): top 5 con nombre del jugador, mejor combo y líneas máximas en una partida. Se muestra en la pantalla de inicio y en el Game Over, resaltando la puntuación actual si entra en el top, y se puede borrar con el botón **Borrar récords**.
+- **Temas visuales (skins)**: Retro, Neon (brillo con `shadowBlur`), Pastel (bordes redondeados) y Pixel art (textura pixelada). Se eligen en el selector **TEMA** del panel lateral, se aplican al instante y la preferencia se guarda en `localStorage` (`tetris.skin`).
 
 ---
 
@@ -84,7 +87,15 @@ Después abre `http://localhost:8000` en el navegador.
 | `↑` o `X` | Rotar la pieza en sentido horario |
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
-| `P`       | Pausar / reanudar                 |
+| `P` o `Esc` | Abrir / cerrar el menú de pausa |
+| `Enter`   | Empezar partida (pantalla inicio) |
+
+Al terminar una partida que entra en el top 5, escribe tu nombre (máx. 12 caracteres) y pulsa **Guardar** o `Enter`. Mientras el campo de nombre tiene el foco, las teclas del juego no responden.
+
+El tema visual se cambia con el selector **TEMA** del panel lateral (sin recargar la página).
+
+
+Mientras el menú de pausa está abierto, las teclas del juego quedan bloqueadas. Al reanudar se ignoran las teclas que sigan mantenidas, para evitar movimientos accidentales.
 
 ---
 
@@ -173,7 +184,8 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `COLS`         | Columnas del tablero                     | `10`                  |
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
-| `COLORS`       | Paleta de colores por tipo de pieza      | 7 colores             |
+| `COLORS`       | Paleta de colores del tema Retro         | 7 colores             |
+| `SKINS`        | Temas visuales (paleta de 7 colores por tema, fondo y dibujo); al añadir una pieza hay que añadir su color en cada tema | `retro` |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
 

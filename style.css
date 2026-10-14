@@ -5,7 +5,7 @@
 }
 
 body {
-  background: #0f0f17;
+  background: var(--page-bg, #0f0f17);
   color: #e0e0e0;
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
@@ -39,7 +39,7 @@ body {
 #board {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board-bg, #1a1a25);
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
 }
@@ -77,8 +77,20 @@ body {
 #next-canvas {
   display: block;
   border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  background: var(--board-bg, #1a1a25);
   border-radius: 4px;
+}
+
+/* ---- Selector de skin ---- */
+#skin-select {
+  background: #22223a;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 6px;
+  cursor: pointer;
 }
 
 /* ---- Controles ---- */
@@ -160,4 +172,184 @@ kbd {
 
 #restart-btn:hover {
   background: #9bbdff;
+}
+
+/* ---- Récords ---- */
+.hidden {
+  display: none !important;
+}
+
+.start-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+}
+
+.start-hint {
+  font-size: 11px;
+  color: #888;
+}
+
+.record-badge {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd54f;
+}
+
+.name-form {
+  display: flex;
+  gap: 6px;
+}
+
+.name-form input {
+  width: 140px;
+  background: #1a1a25;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #e0e0e0;
+  font: inherit;
+  font-size: 13px;
+  user-select: text;
+}
+
+.name-form button,
+.primary-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-btn {
+  padding: 10px 28px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.name-form button:hover,
+.primary-btn:hover {
+  background: #9bbdff;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #e57373;
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.records {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.records table {
+  border-collapse: collapse;
+  margin-bottom: 6px;
+}
+
+.records th,
+.records td {
+  padding: 2px 6px;
+  text-align: right;
+}
+
+.records th {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #555570;
+}
+
+.records td.name,
+.records th.name {
+  text-align: left;
+}
+
+.records tr.current td {
+  color: #0f0f17;
+  background: #ffd54f;
+}
+
+.records .stats {
+  font-size: 11px;
+  color: #7aa2f7;
+}
+
+/* ---- Menú de pausa ---- */
+.overlay.paused #restart-btn,
+.overlay:not(.paused) .pause-menu {
+  display: none;
+}
+
+.pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  width: 180px;
+}
+
+.menu-btn {
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.menu-btn:hover,
+.menu-btn:focus-visible {
+  background: #7aa2f7;
+  color: #0f0f17;
+}
+
+.pause-controls {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: #1a1a25;
+  border: 1px solid #2a2a3a;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #888;
+  text-align: left;
+}
+
+.pause-controls[hidden] {
+  display: none;
+}
+
+.start-level {
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.start-level select {
+  background: #22223a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 4px 6px;
 }
