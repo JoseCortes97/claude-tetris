@@ -47,6 +47,11 @@ const startScreen = document.getElementById('start-screen');
 const startRecords = document.getElementById('start-records');
 const playBtn = document.getElementById('play-btn');
 const resetRecordsBtn = document.getElementById('reset-records-btn');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const controlsBtn = document.getElementById('controls-btn');
+const pauseControls = document.getElementById('pause-controls');
+const startLevelSel = document.getElementById('start-level');
 const skinSelect = document.getElementById('skin-select');
 
 const RECORDS_KEY = 'tetris.records';
@@ -55,6 +60,9 @@ const MAX_RECORDS = 5;
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 let started = false, combo, maxCombo, recordIndex;
 let skin;
+let startLevel = 1;
+// tras reanudar, ignora teclas mantenidas (auto-repeat) hasta una pulsación nueva
+let swallowRepeat = false;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -122,7 +130,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    level = Math.max(startLevel, Math.floor(lines / 10) + 1);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -430,6 +438,7 @@ function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
   draw();
+  overlay.classList.remove('paused');
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
 
@@ -499,15 +508,25 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    overlay.classList.add('hidden');
+    overlay.classList.remove('paused');
+    blurFocus();
+    swallowRepeat = true;
     lastTime = performance.now();
-    loop(lastTime);
+    animId = requestAnimationFrame(loop);
   } else {
     cancelAnimationFrame(animId);
     overlayTitle.textContent = 'PAUSA';
     overlayScore.textContent = '';
     hideRecordUI();
+    pauseControls.hidden = true;
+    overlay.classList.add('paused');
     overlay.classList.remove('hidden');
   }
+}
+
+function blurFocus() {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
 }
 
 function loop(ts) {
@@ -531,19 +550,23 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  startLevel = Number(startLevelSel.value) || 1;
+  level = startLevel;
   paused = false;
   gameOver = false;
   combo = 0;
   maxCombo = 0;
   recordIndex = -1;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  overlay.classList.remove('paused');
+  blurFocus();
+  swallowRepeat = false;
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
@@ -554,8 +577,15 @@ document.addEventListener('keydown', e => {
     if (e.code === 'Enter' || e.code === 'NumpadEnter') { e.preventDefault(); startGame(); }
     return;
   }
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') {
+    if (!e.repeat) togglePause();
+    return;
+  }
   if (paused || gameOver) return;
+  if (swallowRepeat) {
+    if (e.repeat) return;
+    swallowRepeat = false;
+  }
   switch (e.code) {
     case 'ArrowLeft':
       if (!collide(current.shape, current.x - 1, current.y)) current.x--;
@@ -582,6 +612,9 @@ restartBtn.addEventListener('click', init);
 playBtn.addEventListener('click', startGame);
 resetRecordsBtn.addEventListener('click', resetRecords);
 nameForm.addEventListener('submit', saveName);
+resumeBtn.addEventListener('click', togglePause);
+pauseRestartBtn.addEventListener('click', init);
+controlsBtn.addEventListener('click', () => { pauseControls.hidden = !pauseControls.hidden; });
 
 for (const [key, def] of Object.entries(SKINS)) {
   skinSelect.add(new Option(def.name, key));
